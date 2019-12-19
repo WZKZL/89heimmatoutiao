@@ -5,7 +5,7 @@
        <img src="../../assets/img/logo_index.png" alt="">
      </div>
   <!-- 登录表单  表单容器  el-form需要绑定model属性 -->
-    <el-form style="margin-top:30px" :model="loginForm" :rules="loginRules">
+    <el-form  ref="myForm"  style="margin-top:30px" :model="loginForm" :rules="loginRules">
       <!-- 表单域 -->
       <el-form-item prop="mobile">
         <!-- 放置具体的组件 登录手机号组件    双向绑定数据对象-->
@@ -22,7 +22,7 @@
           <el-checkbox v-model=" loginForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button style="width:100%" type="primary">登录</el-button>
+        <el-button @click="submitLogin" style="width:100%" type="primary">登录</el-button>
       </el-form-item>
     </el-form>
    </el-card>
@@ -40,9 +40,38 @@ export default {
         check: false // 是否勾选
       },
       loginRules: {
-        // 验证规则 验证登录表单的
+        // 验证规则 验证登录表单的 key(是我要校验的名称)vaule：（他是一个数组）
+        mobile: [{ required: true, message: '请输入您的手机号' }, {
+          pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'
+        }],
+        code: [{ required: true, message: '请输入验证码' }, {
+          pattern: /^\d{6}$/,
+          message: '验证码格式不正确'
+        }],
+        // validator是一个自定义函数
+        check: [{ validator: function (rule, value, callback) {
+          // rule指的是当前的规则 没什么用
+          // value 指的就是 我们要校验的字段的值
+          if (value) {
+            // 认为校验通过放过去
+            callback()
+          } else {
+            // 认为校验失败不能通过
+            callback(new Error('对不起有错误，无法通过'))
+          }
+        } }]
 
       }
+    }
+  },
+  methods: {
+    submitLogin () {
+      this.$refs.myForm.validate(function (isOk) {
+        if (isOk) {
+          // 认为前端校验登录表单成功
+          console.log('前端校验成功，调用接口发送用户名和我的密码，去后台校验')
+        }
+      })
     }
   }
 }

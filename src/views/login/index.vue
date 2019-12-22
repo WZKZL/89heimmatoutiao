@@ -19,7 +19,7 @@
       </el-form-item>
       <!-- 勾选框 -->
       <el-form-item prop="check">
-          <el-checkbox v-model=" loginForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
+          <el-checkbox v-model="loginForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button @click="submitLogin" style="width:100%" type="primary">登录</el-button>
@@ -59,17 +59,32 @@ export default {
             // 认为校验失败不能通过
             callback(new Error('对不起有错误，无法通过'))
           }
-        } }]
-
+        }
+        }]
       }
     }
   },
   methods: {
     submitLogin () {
-      this.$refs.myForm.validate(function (isOk) {
+      this.$refs.myForm.validate((isOk) => {
         if (isOk) {
           // 认为前端校验登录表单成功
-          console.log('前端校验成功，调用接口发送用户名和我的密码，去后台校验')
+          // 地址参数 查询参数 parame 参数
+          // body参数  data对象
+          this.$axios({
+            url: '/authorizations', // 请求地址
+            method: 'post',
+            data: this.loginForm
+          }).then(result => {
+            window.localStorage.setItem('user-token', result.data.data.token) // 前端缓存令牌
+            this.$router.push('/home')
+            // 成功之后才会进入到then
+          }).catch(() => {
+            this.$message({
+              message: '您的手机号或验证码错误',
+              type: 'warning'
+            })
+          })
         }
       })
     }

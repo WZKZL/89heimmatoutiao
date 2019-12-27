@@ -2,7 +2,7 @@
     <!-- 放置一个外层容器 -->
      <el-container>
       <!-- 左右布局 -->
-      <el-aside style="background-color:#353b4e; height:100vh;width:230px" >
+      <el-aside style="background-color:#353b4e; min-height:100vh;width:230px" >
         <layout-aside></layout-aside>
       </el-aside>
       <!-- 在放置一个container -->
@@ -12,8 +12,9 @@
        <!-- 头部组件 -->
        <layout-header></layout-header>
        </el-header>
-        <el-main>
-             主要区域
+        <el-main style="padding:0">
+             <!-- 二级路由容器 -->
+             <router-view></router-view>
         </el-main>
       </el-container>
      </el-container>
@@ -21,13 +22,8 @@
 
 <script>
 
-import layoutAside from '../../components/Home/layout-aside'
-import layoutHeader from '../../components/Home/layout-header'
 export default {
-  components: {
-    'layout-aside': layoutAside,
-    'layout-header': layoutHeader
-  }
+
 }
 </script>
 
